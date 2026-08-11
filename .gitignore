@@ -1,0 +1,18 @@
+# Virtual environment
+.venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# IDE
+.vscode/
+.idea/
+
+# Generated outputs
+results/
+data/simulated/
+
+# OS files
+.DS_Store
+Thumbs.db
