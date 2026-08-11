@@ -1,16 +1,33 @@
 import numpy as np
 
 from models import RobotState
+from noise import process_noise
 
 
 class RobotSimulator:
     """
-    Simulates the true motion of a robot in 2D.
+    Simulates the true motion of a robot using a constant velocity model.
     """
 
-    def __init__(self, dt: float = 1.0):
+    def __init__(
+        self,
+        dt: float = 1.0,
+        random_seed: int = 42,
+    ):
 
         self.dt = dt
+
+        np.random.seed(random_seed)
+
+        self.F = np.array(
+            [
+                [1, 0, dt, 0],
+                [0, 1, 0, dt],
+                [0, 0, 1, 0],
+                [0, 0, 0, 1],
+            ],
+            dtype=float,
+        )
 
     def simulate(
         self,
@@ -18,27 +35,16 @@ class RobotSimulator:
         num_steps: int,
     ):
 
-        states = []
+        trajectory = []
 
-        state = RobotState(
-            initial_state.x,
-            initial_state.y,
-            initial_state.vx,
-            initial_state.vy,
-        )
+        state_vector = initial_state.as_vector()
 
         for _ in range(num_steps):
 
-            states.append(
-                RobotState(
-                    state.x,
-                    state.y,
-                    state.vx,
-                    state.vy,
-                )
+            trajectory.append(
+                RobotState.from_vector(state_vector)
             )
 
-            state.x += state.vx * self.dt
-            state.y += state.vy * self.dt
+            state_vector = self.F @ state_vector + process_noise()
 
-        return states
+        return trajectory
