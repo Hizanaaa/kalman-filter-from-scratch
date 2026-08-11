@@ -13,19 +13,16 @@ def main():
         vy=1.0,
     )
 
-    states = simulator.simulate(
+    ground_truth, gps_measurements = simulator.simulate(
         initial_state=initial_state,
         num_steps=10,
     )
 
-    for i, state in enumerate(states):
-
+    for i, (state, gps) in enumerate(zip(ground_truth, gps_measurements)):
         print(
-            f"Step {i}: "
-            f"x={state.x:.2f}, "
-            f"y={state.y:.2f}, "
-            f"vx={state.vx:.2f}, "
-            f"vy={state.vy:.2f}"
+            f"Step {i:02d} | "
+            f"True: ({state.x:.2f}, {state.y:.2f}) | "
+            f"GPS: ({gps[0,0]:.2f}, {gps[1,0]:.2f})"
         )
 
 
