@@ -1,7 +1,7 @@
 import numpy as np
 
-from models import RobotState
-from noise import process_noise, gps_noise
+from simulation.models import RobotState, SimulationResult
+from simulation.noise import process_noise, gps_noise
 
 
 class RobotSimulator:
@@ -43,21 +43,20 @@ class RobotSimulator:
         num_steps: int,
     ):
 
-        ground_truth = []
-        gps_measurements = []
+        result = SimulationResult()
 
         state_vector = initial_state.as_vector()
 
         for _ in range(num_steps):
 
-           ground_truth.append(
+            result.ground_truth.append(
                 RobotState.from_vector(state_vector)
             )
 
-           gps = self.H @ state_vector + gps_noise()
+            gps = self.H @ state_vector + gps_noise()
 
-           gps_measurements.append(gps)
+            result.gps_measurements.append(gps)
 
-           state_vector = self.F @ state_vector + process_noise()
+            state_vector = self.F @ state_vector + process_noise()
 
-        return ground_truth, gps_measurements
+        return result
