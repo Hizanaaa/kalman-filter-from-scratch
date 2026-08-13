@@ -61,3 +61,19 @@ class KalmanFilter:
         self.x = initial_state.as_vector()
 
         self.P = np.eye(4) * initial_uncertainty
+
+    def predict(self):
+        """
+        Predict the next state and covariance.
+        """
+
+        if self.x is None or self.P is None:
+            raise RuntimeError(
+                "Kalman Filter must be initialized before prediction."
+            )
+
+        # Predict the next state
+        self.x = self.F @ self.x
+
+        # Predict the uncertainty
+        self.P = self.F @ self.P @ self.F.T + self.Q
