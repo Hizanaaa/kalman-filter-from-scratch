@@ -2,9 +2,14 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 
 
-def plot_trajectory(ground_truth, gps_measurements):
+def plot_trajectory(
+    ground_truth,
+    gps_measurements,
+    estimates,
+):
     """
-    Plot the true robot trajectory and noisy GPS measurements.
+    Plot ground truth, noisy GPS measurements,
+    and Kalman Filter estimates.
     """
 
     true_x = [state.x for state in ground_truth]
@@ -13,23 +18,8 @@ def plot_trajectory(ground_truth, gps_measurements):
     gps_x = [gps[0, 0] for gps in gps_measurements]
     gps_y = [gps[1, 0] for gps in gps_measurements]
 
-    plt.figure(figsize=(8, 6))
-
-    plt.plot(
-        true_x,
-        true_y,
-        color="blue",
-        linewidth=2,
-        label="Ground Truth",
-    )
-
-    plt.scatter(
-        gps_x,
-        gps_y,
-        color="red",
-        s=40,
-        label="GPS Measurements",
-    )
+    estimate_x = [state.x for state in estimates]
+    estimate_y = [state.y for state in estimates]
 
     plt.figure(figsize=(10, 6))
 
@@ -50,9 +40,18 @@ def plot_trajectory(ground_truth, gps_measurements):
         label="GPS Measurements",
     )
 
+    plt.plot(
+        estimate_x,
+        estimate_y,
+        color="green",
+        linewidth=2.5,
+        label="Kalman Estimate",
+    )
+
     plt.xlabel("X Position (m)")
     plt.ylabel("Y Position (m)")
-    plt.title("Ground Truth vs Noisy GPS Measurements")
+    plt.title("Ground Truth vs GPS vs Kalman Filter")
+
     plt.legend()
     plt.grid(True, linestyle="--", alpha=0.6)
     plt.axis("equal")
