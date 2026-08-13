@@ -1,0 +1,9 @@
+Kalman Filter Evaluation
+========================
+
+Number of runs: 50
+Steps per run: 100
+
+GPS RMSE: 0.7055 +/- 0.0380 m
+Kalman RMSE: 0.4908 +/- 0.0352 m
+RMSE Improvement: 30.44% +/- 3.17%

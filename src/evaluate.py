@@ -4,6 +4,7 @@ from simulation.simulator import RobotSimulator
 from simulation.models import RobotState
 from filters.kalman_filter import KalmanFilter
 
+from pathlib import Path
 
 def calculate_rmse(estimated, true):
     """
@@ -121,6 +122,37 @@ def main():
         * 100
     )
 
+    results_dir = Path("results")
+    results_dir.mkdir(exist_ok=True)
+
+    output_file = results_dir / "evaluation_results.txt"
+
+    with open(output_file, "w") as file:
+        file.write("Kalman Filter Evaluation\n")
+        file.write("========================\n\n")
+
+        file.write("Number of runs: 50\n")
+        file.write("Steps per run: 100\n\n")
+
+        file.write(
+            f"GPS RMSE: "
+            f"{gps_errors.mean():.4f} "
+            f"+/- {gps_errors.std():.4f} m\n"
+        )
+
+        file.write(
+            f"Kalman RMSE: "
+            f"{kalman_errors.mean():.4f} "
+            f"+/- {kalman_errors.std():.4f} m\n"
+        )
+
+        file.write(
+            f"RMSE Improvement: "
+            f"{improvement.mean():.2f}% "
+            f"+/- {improvement.std():.2f}%\n"
+        )
+
+    print(f"\nResults saved to: {output_file}")
     print("\nEvaluation Results")
     print("------------------")
 

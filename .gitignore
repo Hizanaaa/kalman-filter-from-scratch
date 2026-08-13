@@ -10,7 +10,9 @@ __pycache__/
 .idea/
 
 # Generated outputs
-results/
+# Generated results
+results/*.png
+results/*.csv
 data/simulated/
 
 # OS files
