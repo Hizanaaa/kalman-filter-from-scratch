@@ -1,4 +1,4 @@
-# Failure Modes
+# Failure Mode Analysis
 
 ## GPS Dropout
 
@@ -60,3 +60,77 @@ Instead, it explicitly represents increasing uncertainty:
 \]
 
 This is an important property of probabilistic state estimation.
+
+# GPS and Sensor Fail Analysis
+
+This document evaluates how the localization system behaves when GPS
+measurements become unavailable and the robot must rely on odometry.
+
+The experiments focus on two important properties of a Kalman-filter-based
+localization system:
+
+1. Uncertainty growth when absolute position measurements are unavailable.
+2. Recovery when GPS measurements become available again.
+
+---
+
+## 1. GPS Dropout with Linear Kalman Filter
+
+The first failure-mode experiment evaluates the linear Kalman Filter under a
+GPS outage.
+
+### Configuration
+
+- GPS dropout: steps 40–69
+- Total simulation steps: 100
+- GPS measurements: position `(x, y)`
+- Motion model: constant velocity
+
+### Results
+
+| Metric | Result |
+|---|---:|
+| Position error before dropout | 0.4923 m |
+| Position error during dropout | 13.4045 m |
+| Position error after GPS recovery | 1.3628 m |
+| Covariance trace before dropout | 0.7526 |
+| Covariance trace during dropout | 1102.0521 |
+| Covariance trace after recovery | 1.8278 |
+
+### Interpretation
+
+When GPS measurements are removed, the filter must rely entirely on its
+motion model. Prediction errors accumulate over time, causing the position
+error to increase substantially.
+
+At the same time, the covariance grows from:
+
+`0.7526 → 1102.0521`
+
+This represents increasing uncertainty in the state estimate.
+
+When GPS becomes available again, the measurement update reduces the
+uncertainty substantially and pulls the state estimate back toward the true
+trajectory.
+
+The remaining post-recovery error demonstrates that a measurement update
+does not necessarily produce an instantaneous perfect estimate.
+
+---
+
+## 2. Odometry Drift with GPS Dropout
+
+The second experiment uses a nonlinear robot model with a drifting odometry
+sensor.
+
+The odometry sensor measures:
+
+- Linear velocity `v`
+- Angular velocity `ω`
+
+The measurements contain both random noise and slowly changing bias.
+
+The EKF state is:
+
+```text
+[x, y, θ]
