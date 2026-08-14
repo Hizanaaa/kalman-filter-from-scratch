@@ -1,0 +1,9 @@
+Extended Kalman Filter Evaluation
+=================================
+
+Number of runs: 50
+Steps per run: 100
+
+GPS RMSE: 0.7002 +/- 0.0378 m
+EKF RMSE: 0.5596 +/- 0.0406 m
+RMSE Improvement: 20.12% +/- 3.05%
