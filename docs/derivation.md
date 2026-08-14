@@ -247,10 +247,10 @@ A general form is:
 $$
 P=
 \begin{bmatrix}
-\sigma_x^2 & \operatorname{cov}(x,y) & \operatorname{cov}(x,v_x) & \operatorname{cov}(x,v_y) \\
-\operatorname{cov}(y,x) & \sigma_y^2 & \operatorname{cov}(y,v_x) & \operatorname{cov}(y,v_y) \\
-\operatorname{cov}(v_x,x) & \operatorname{cov}(v_x,y) & \sigma_{v_x}^2 & \operatorname{cov}(v_x,v_y) \\
-\operatorname{cov}(v_y,x) & \operatorname{cov}(v_y,y) & \operatorname{cov}(v_y,v_x) & \sigma_{v_y}^2
+\sigma_x^2 & \text{cov}(x,y) & \text{cov}(x,v_x) & \text{cov}(x,v_y) \\
+\text{cov}(y,x) & \sigma_y^2 & \text{cov}(y,v_x) & \text{cov}(y,v_y) \\
+\text{cov}(v_x,x) & \text{cov}(v_x,y) & \sigma_{v_x}^2 & \text{cov}(v_x,v_y) \\
+\text{cov}(v_y,x) & \text{cov}(v_y,y) & \text{cov}(v_y,v_x) & \sigma_{v_y}^2
 \end{bmatrix}
 $$
 
@@ -291,13 +291,13 @@ $$
 The predicted covariance is:
 
 $$
-P_k^{-} = \operatorname{Cov}\left(F\mathbf{x}_{k-1} + \mathbf{w}_k\right)
+P_k^{-} = \text{Cov}\left(F\mathbf{x}_{k-1} + \mathbf{w}_k\right)
 $$
 
 Assuming the process noise is independent of the previous state:
 
 $$
-\operatorname{Cov}(F\mathbf{x}_{k-1} + \mathbf{w}_k) = FP_{k-1}F^T+Q
+\text{Cov}(F\mathbf{x}_{k-1} + \mathbf{w}_k) = FP_{k-1}F^T+Q
 $$
 
 Therefore:
@@ -465,7 +465,7 @@ The innovation itself has uncertainty.
 The innovation covariance is:
 
 $$
-S_k = \operatorname{Cov}(\mathbf{y}_k)
+S_k = \text{Cov}(\mathbf{y}_k)
 $$
 
 Since:
@@ -782,7 +782,7 @@ The linear GPS dropout experiment produced:
 The covariance trace is:
 
 $$
-\operatorname{tr}(P) = \sum_i P_{ii}
+\text{tr}(P) = \sum_i P_{ii}
 $$
 
 and provides a simple scalar measure of total state variance.
