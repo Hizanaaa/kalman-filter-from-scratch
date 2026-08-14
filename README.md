@@ -43,14 +43,9 @@ Detailed mathematical and implementation documentation is available in the
 The Linear Kalman Filter uses a constant-velocity model with a four-dimensional
 state:
 
-\[
-\mathbf{x} =
-\begin{bmatrix}
-x & y & v_x & v_y
-\end{bmatrix}^T
-\]
+$$ \mathbf{x} = \begin{bmatrix} x & y & v_x & v_y \end{bmatrix}^T $$
 
-GPS provides noisy measurements of the robot's \(x\) and \(y\) position.
+GPS provides noisy measurements of the robot's $x$ and $y$ position.
 
 ### Multi-Run Evaluation
 
@@ -79,32 +74,15 @@ GPS measurements and Kalman Filter estimate.
 
 The nonlinear experiment uses a unicycle-style robot model with the state:
 
-\[
-\mathbf{x} =
-\begin{bmatrix}
-x & y & \theta & v & \omega
-\end{bmatrix}^T
-\]
+$$ \mathbf{x} = \begin{bmatrix} x & y & \theta & v & \omega \end{bmatrix}^T $$
 
 The nonlinear motion model uses:
 
-\[
-x_{k+1}
-=
-x_k + v_k\cos(\theta_k)\Delta t
-\]
+$$ x_{k+1} = x_k + v_k\cos(\theta_k)\Delta t $$
 
-\[
-y_{k+1}
-=
-y_k + v_k\sin(\theta_k)\Delta t
-\]
+$$ y_{k+1} = y_k + v_k\sin(\theta_k)\Delta t $$
 
-\[
-\theta_{k+1}
-=
-\theta_k+\omega_k\Delta t
-\]
+$$ \theta_{k+1} = \theta_k+\omega_k\Delta t $$
 
 Because the motion model is nonlinear, the EKF linearizes it using a
 state-dependent Jacobian.
@@ -181,24 +159,13 @@ and pulls the estimate back toward the true trajectory.
 
 The project also introduces a simulated odometry sensor measuring:
 
-\[
-\mathbf{u} =
-\begin{bmatrix}
-v_{\mathrm{odom}} \\
-\omega_{\mathrm{odom}}
-\end{bmatrix}
-\]
+$$ \mathbf{u} = \begin{bmatrix} v_{\mathrm{odom}} \\ \omega_{\mathrm{odom}} \end{bmatrix} $$
 
 The sensor contains Gaussian measurement noise and slowly changing bias.
 
 A separate three-state EKF estimates:
 
-\[
-\mathbf{x} =
-\begin{bmatrix}
-x & y & \theta
-\end{bmatrix}^T
-\]
+$$ \mathbf{x} = \begin{bmatrix} x & y & \theta \end{bmatrix}^T $$
 
 while using measured velocity and angular velocity as control inputs.
 
@@ -238,15 +205,11 @@ During the outage, the EKF relies on odometry alone.
 
 The position error increases:
 
-\[
-0.1131 \rightarrow 1.7065\text{ m}
-\]
+$$ 0.1131 \rightarrow 1.7065\text{ m} $$
 
 while uncertainty increases:
 
-\[
-0.5730 \rightarrow 1288.0796
-\]
+$$ 0.5730 \rightarrow 1288.0796 $$
 
 When GPS returns, the filter reduces its uncertainty and the position error
 falls to 0.5383 m.
