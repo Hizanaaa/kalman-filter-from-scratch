@@ -35,7 +35,13 @@ class ExtendedKalmanFilter:
         # GPS measurement noise covariance
         self.R = np.eye(2) * measurement_variance
 
-    def motion_model(self, state: np.ndarray) -> np.ndarray:
+    def motion_model(
+        self,
+        state: np.ndarray,
+        velocity: float | None = None,
+        angular_velocity: float | None = None,
+    ) -> np.ndarray:
+        
         """
         Nonlinear unicycle motion model.
 
@@ -47,16 +53,22 @@ class ExtendedKalmanFilter:
 
         dt = self.dt
 
+        if velocity is None:
+            velocity = v
+
+        if angular_velocity is None:
+            angular_velocity = omega
+
         return np.array(
             [
                 [
-                    x + v * np.cos(theta) * dt
+                    x + velocity * np.cos(theta) * dt
                 ],
                 [
-                    y + v * np.sin(theta) * dt
+                    y + velocity * np.sin(theta) * dt
                 ],
                 [
-                    theta + omega * dt
+                    theta + angular_velocity * dt
                 ],
                 [
                     v
@@ -67,9 +79,11 @@ class ExtendedKalmanFilter:
             ],
             dtype=float,
         )
+    
     def compute_jacobian(
         self,
         state: np.ndarray,
+        velocity: float | None = None,
     ) -> np.ndarray:
         """
         Compute the Jacobian of the nonlinear
@@ -80,19 +94,22 @@ class ExtendedKalmanFilter:
 
         dt = self.dt
 
+        if velocity is None:
+            velocity = v
+
         return np.array(
             [
                 [
                     1,
                     0,
-                    -v * np.sin(theta) * dt,
+                    -velocity * np.sin(theta) * dt,
                     np.cos(theta) * dt,
                     0,
                 ],
                 [
                     0,
                     1,
-                    v * np.cos(theta) * dt,
+                    velocity * np.cos(theta) * dt,
                     np.sin(theta) * dt,
                     0,
                 ],
@@ -134,7 +151,11 @@ class ExtendedKalmanFilter:
 
         self.P = np.eye(5) * initial_uncertainty
     
-    def predict(self):
+    def predict(
+        self,
+        velocity: float | None = None,
+        angular_velocity: float | None = None,
+    ):
         """
         Predict the next state and covariance.
         """
@@ -145,10 +166,16 @@ class ExtendedKalmanFilter:
             )
 
         # Compute Jacobian around current state
-        F = self.compute_jacobian(self.x)
+        F = self.compute_jacobian(
+            self.x, 
+            velocity=velocity
+        )
 
         # Propagate state through nonlinear model
-        self.x = self.motion_model(self.x)
+        self.x = self.motion_model(
+            self.x, 
+            velocity=velocity, 
+            angular_velocity=angular_velocity)
 
         # Keep heading within [-pi, pi]
         self.x[2, 0] = self.normalize_angle(self.x[2, 0])
