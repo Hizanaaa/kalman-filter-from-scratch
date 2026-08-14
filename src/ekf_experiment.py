@@ -1,7 +1,79 @@
 import numpy as np
+import matplotlib.pyplot as plt
+
+from pathlib import Path 
 
 from simulation.nonlinear_simulator import NonlinearRobotSimulator
 from filters.ekf import ExtendedKalmanFilter
+
+def plot_ekf_trajectory(
+    ground_truth,
+    gps_measurements,
+    estimates,
+):
+    """
+    Plot nonlinear ground truth, noisy GPS,
+    and EKF trajectory.
+    """
+
+    true_x = [state[0, 0] for state in ground_truth]
+    true_y = [state[1, 0] for state in ground_truth]
+
+    gps_x = [gps[0, 0] for gps in gps_measurements]
+    gps_y = [gps[1, 0] for gps in gps_measurements]
+
+    estimate_x = [state[0, 0] for state in estimates]
+    estimate_y = [state[1, 0] for state in estimates]
+
+    plt.figure(figsize=(10, 6))
+
+    plt.plot(
+        true_x,
+        true_y,
+        linewidth=2.5,
+        label="Ground Truth",
+    )
+
+    plt.scatter(
+        gps_x,
+        gps_y,
+        s=35,
+        alpha=0.7,
+        label="GPS Measurements",
+    )
+
+    plt.plot(
+        estimate_x,
+        estimate_y,
+        linewidth=2.5,
+        label="EKF Estimate",
+    )
+
+    plt.xlabel("X Position (m)")
+    plt.ylabel("Y Position (m)")
+    plt.title("Nonlinear Robot Localization: EKF")
+
+    plt.legend()
+    plt.grid(True)
+    plt.axis("equal")
+
+    results_dir = Path("results")
+    results_dir.mkdir(exist_ok=True)
+
+    output_file = results_dir / "ekf_trajectory.png"
+
+    plt.savefig(
+        output_file,
+        dpi=300,
+        bbox_inches="tight",
+    )
+
+    plt.close()
+
+    print(
+        f"\nEKF trajectory plot saved to: "
+        f"{output_file}"
+    )
 
 
 def main():
@@ -113,6 +185,12 @@ def main():
     print(f"GPS RMSE:  {gps_rmse:.4f} m")
     print(f"EKF RMSE:  {ekf_rmse:.4f} m")
     print(f"Improvement: {improvement:.2f}%")
+
+    plot_ekf_trajectory(
+        ground_truth,
+        gps_measurements,
+        estimates,
+    )
 
 if __name__ == "__main__":
     main()
