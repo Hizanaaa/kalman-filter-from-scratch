@@ -20,6 +20,8 @@ class OdometryEKF:
         dt: float,
         process_variance: float,
         measurement_variance: float,
+        velocity_variance: float | None = None,
+        angular_velocity_variance: float | None = None,
     ):
         self.dt = dt
 
@@ -27,6 +29,18 @@ class OdometryEKF:
         self.P = None
 
         self.process_variance = process_variance
+
+        self.velocity_variance = (
+            process_variance
+            if velocity_variance is None
+            else velocity_variance
+        )
+
+        self.angular_velocity_variance = (
+            process_variance
+            if angular_velocity_variance is None
+            else angular_velocity_variance
+        )
 
         self.R = np.eye(2) * measurement_variance
 
@@ -126,9 +140,17 @@ class OdometryEKF:
 
         G = self.compute_control_noise_jacobian()
 
-        control_noise = (
-            self.process_variance
-            * np.eye(2)
+        control_noise = np.array(
+            [
+                [
+                    self.velocity_variance,
+                    0.0,
+                ],
+                [
+                    0.0,
+                    self.angular_velocity_variance,
+                ],
+            ]
         )
 
         self.P = (
